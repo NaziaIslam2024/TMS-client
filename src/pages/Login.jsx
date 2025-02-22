@@ -33,6 +33,7 @@ const Login = () => {
                         // navigate('/dashboard');
                     }
                 })
+                navigate('/home');
             })
             .catch(error =>
                 Swal.fire({

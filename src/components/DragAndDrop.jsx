@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 
@@ -7,6 +7,11 @@ const DragAndDrop = ({ initialState }) => {
     const axiosPublic = useAxiosPublic();
     console.log(initialState);
     const [data, setData] = useState(initialState);
+    // useEffect(() => {
+    //     setData(initialState);
+    // },[])
+    // 
+    console.log(data);
     const dragItem = useRef();
     const dragContainer = useRef();
 

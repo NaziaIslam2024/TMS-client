@@ -11,12 +11,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 const Homee = () => {
+    
+    const [uTasks, setuTasks] = useState([]);
     const { user } = useAuth();
     const axiosPublic = useAxiosPublic();
    
     //-----------------------------------------
     const [tasks, setTasks] = useState(null);
-    const [userTasks, refetch, isPending, isError, error] = useTodo();
+    const [oTData, setoTData] = useState(null); 
+    // const [userTasks, refetch, isPending, isError, error] = useTodo();
+    // setuTasks(userTasks);
     const [initialData, setInitialData]  = useState(null);
     // const initialData = {
     //     Todo: [
@@ -31,64 +35,19 @@ const Homee = () => {
     //         "Conduct code reviews",
     //     ],
     // }
-
-    useEffect(() => {
-        // socket.io connection
-        const socket = io(`https://tms-server-sq5b.onrender.com/socket`);
-    
-        const handleNewThought = (thought) => {
-          setThoughts((prevThoughts) => [...prevThoughts, thought]);
-        };
-    
-        socket.on("newThought", handleNewThought);
-    
-        // Cleanup on component unmount
-        return () => {
-          socket.off("newThought", handleNewThought);
-        };
-      }, []); 
-    async () => {
-        //socket.io connection
-        const socket = io(`localhost:4565/socket`);
-    
-        socket.on("newTask", (task) => {
-          this.setState({ userTasks: [...this.state.userTasks, task] });
-        });
-    
-       
-    
-        // await this.fetchThoughts();
-        await refetch();
-    };
-    
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const title = e.target.title.value;
-        const description = e.target.description.value;
-        // console.log(title, description);
-        const obj = ({ title: title, description: description, taskOwner: user.email, timeStamp: Date.now(), category: "To-Do" })
-        setTasks(obj);
-        const res = await axiosPublic.post('/tasks', obj);
-        console.log(res);
-        if (res.data._id) {
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "Task added successfully",
-                showConfirmButton: false,
-                timer: 900
-            });
-            // await refetch();
-            // setTasks(obj);
-        }
-        // document.getElementById('task_add_modal').close();
-    }
-    console.log(userTasks);
-
+    const [allTasks, setAllTasks] = useState([]);
+    const { data: userTasks = [], refetch, isPending, isError, error } = useQuery({
+        queryKey: ['userTasks'],
+        queryFn: async () => {
+            const res = await axiosPublic.get(`/tasks/${user.email}`);
+            setAllTasks(res.data);
+            return res.data;
+        },
+        // refetchInterval: 100,
+    })
+    console.log(allTasks);
     const order = ["To-Do", "In Progress", "Done"];
-    const groupedData = userTasks.reduce((acc, item) => {
+    const groupedData = allTasks.reduce((acc, item) => {
         if (!acc[item.category]) {
             acc[item.category] = [];
         }
@@ -102,8 +61,90 @@ const Homee = () => {
     const orderedGroupedData = Object.fromEntries(
         order.map(key => [key, groupedData[key] || []])
     );
+    
+    useEffect(() => {
+        // socket.io connection
+        // const socket = io(`https://tms-server-sq5b.onrender.com/socket`);
+        const socket = io(`http://localhost:4564/socket`);
+    
+        const handleNewTask = (task) => {
+            console.log(task);
+            // setuTasks(userTasks);
+            // console.log(userTasks);
+            console.log("task")
+            console.log(allTasks)
+            setAllTasks([...allTasks, task] );
+        };
+    
+        socket.on("newTask", handleNewTask);
+    
+        // Cleanup on component unmount
+        // return () => {
+        //   socket.off("newThought", handleNewThought);
+        // };
+      }, [allTasks]); 
+    //   console.log(allTasks);
 
-    console.log(orderedGroupedData);
+    // async () => {
+    //     //socket.io connection
+    //     const socket = io(`localhost:4565/socket`);
+    
+    //     socket.on("newTask", (task) => {
+    //       this.setState({ userTasks: [...this.state.userTasks, task] });
+    //     });
+    
+       
+    
+    //     // await this.fetchThoughts();
+    //     await refetch();
+    // };
+    
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const title = e.target.title.value;
+        const description = e.target.description.value;
+        // console.log(title, description);
+        const obj = ({ title: title, description: description, taskOwner: user.email, timeStamp: Date.now(), category: "To-Do" })
+        setTasks(obj);
+        const res = await axiosPublic.post('/tasks', obj);
+        // console.log(res);
+        if (res.data._id) {
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Task added successfully",
+                showConfirmButton: false,
+                timer: 900
+            });
+            // await refetch();
+            // setTasks(obj);
+        }
+        // document.getElementById('task_add_modal').close();
+    }
+    // console.log(userTasks);
+    useEffect(() => {
+    const order = ["To-Do", "In Progress", "Done"];
+    const groupedData = allTasks.reduce((acc, item) => {
+        if (!acc[item.category]) {
+            acc[item.category] = [];
+        }
+        acc[item.category].push({
+            "title": item.title, "id": item._id, "desc": item.description,
+            "taskOwner": item.taskOwner, "timestamp": item.timeStamp
+        });
+        return acc;
+    }, {});
+
+    const orderedGroupedData = Object.fromEntries(
+        order.map(key => [key, groupedData[key] || []])
+    );
+    // useEffect(() => {
+        setoTData(orderedGroupedData);
+    
+    }, [allTasks]); 
+    // console.log(orderedGroupedData);
     // setTasks(orderedGroupedData)
 
 
