@@ -7,10 +7,10 @@ const DragAndDrop = ({ initialState }) => {
     const axiosPublic = useAxiosPublic();
     console.log(initialState);
     const [data, setData] = useState(initialState);
-    // useEffect(() => {
-    //     setData(initialState);
-    // },[])
-    // 
+    useEffect(() => {
+        setData(initialState);
+    },[initialState])
+    
     console.log(data);
     const dragItem = useRef();
     const dragContainer = useRef();

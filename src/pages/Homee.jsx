@@ -18,7 +18,24 @@ const Homee = () => {
    
     //-----------------------------------------
     const [tasks, setTasks] = useState(null);
-    const [oTData, setoTData] = useState(null); 
+    const [unTasks, urefetch, uisPending, uisError, uerror] = useTodo();
+    const order = ["To-Do", "In Progress", "Done"];
+    let groupedData = unTasks.reduce((acc, item) => {
+        if (!acc[item.category]) {
+            acc[item.category] = [];
+        }
+        acc[item.category].push({
+            "title": item.title, "id": item._id, "desc": item.description,
+            "taskOwner": item.taskOwner, "timestamp": item.timeStamp
+        });
+        return acc;
+    }, {});
+
+    let orderedGroupedData = Object.fromEntries(
+        order.map(key => [key, groupedData[key] || []])
+    );
+
+    const [oTData, setoTData] = useState(orderedGroupedData); 
     // const [userTasks, refetch, isPending, isError, error] = useTodo();
     // setuTasks(userTasks);
     const [initialData, setInitialData]  = useState(null);
@@ -44,23 +61,24 @@ const Homee = () => {
             return res.data;
         },
         // refetchInterval: 100,
-    })
-    console.log(allTasks);
-    const order = ["To-Do", "In Progress", "Done"];
-    const groupedData = allTasks.reduce((acc, item) => {
-        if (!acc[item.category]) {
-            acc[item.category] = [];
-        }
-        acc[item.category].push({
-            "title": item.title, "id": item._id, "desc": item.description,
-            "taskOwner": item.taskOwner, "timestamp": item.timeStamp
-        });
-        return acc;
-    }, {});
+    });
 
-    const orderedGroupedData = Object.fromEntries(
-        order.map(key => [key, groupedData[key] || []])
-    );
+    console.log(allTasks);
+    // const order = ["To-Do", "In Progress", "Done"];
+    // let groupedData = allTasks.reduce((acc, item) => {
+    //     if (!acc[item.category]) {
+    //         acc[item.category] = [];
+    //     }
+    //     acc[item.category].push({
+    //         "title": item.title, "id": item._id, "desc": item.description,
+    //         "taskOwner": item.taskOwner, "timestamp": item.timeStamp
+    //     });
+    //     return acc;
+    // }, {});
+
+    // let orderedGroupedData = Object.fromEntries(
+    //     order.map(key => [key, groupedData[key] || []])
+    // );
     
     useEffect(() => {
         // socket.io connection
@@ -77,6 +95,13 @@ const Homee = () => {
         };
     
         socket.on("newTask", handleNewTask);
+
+        socket.on("deletedTask", (id) => {
+            const updatedTasks = allTasks.filter((task) => {
+              return task._id !== id;
+            });
+            setAllTasks(updatedTasks)
+          });
     
         // Cleanup on component unmount
         // return () => {
@@ -125,21 +150,21 @@ const Homee = () => {
     }
     // console.log(userTasks);
     useEffect(() => {
-    const order = ["To-Do", "In Progress", "Done"];
-    const groupedData = allTasks.reduce((acc, item) => {
-        if (!acc[item.category]) {
-            acc[item.category] = [];
-        }
-        acc[item.category].push({
-            "title": item.title, "id": item._id, "desc": item.description,
-            "taskOwner": item.taskOwner, "timestamp": item.timeStamp
-        });
-        return acc;
-    }, {});
+    // const order = ["To-Do", "In Progress", "Done"];
+        groupedData = allTasks.reduce((acc, item) => {
+            if (!acc[item.category]) {
+                acc[item.category] = [];
+            }
+            acc[item.category].push({
+                "title": item.title, "id": item._id, "desc": item.description,
+                "taskOwner": item.taskOwner, "timestamp": item.timeStamp
+            });
+            return acc;
+        }, {});
 
-    const orderedGroupedData = Object.fromEntries(
-        order.map(key => [key, groupedData[key] || []])
-    );
+        orderedGroupedData = Object.fromEntries(
+            order.map(key => [key, groupedData[key] || []])
+        );
     // useEffect(() => {
         setoTData(orderedGroupedData);
     
@@ -280,7 +305,7 @@ const Homee = () => {
                         }
                     </div>
                 </div> */}
-                <DragAndDrop initialState={orderedGroupedData}></DragAndDrop>
+                <DragAndDrop initialState={oTData}></DragAndDrop>
             </div>
         </div>
     );
