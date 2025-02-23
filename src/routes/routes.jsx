@@ -5,7 +5,6 @@ import ErrorPage from "../pages/ErrorPage";
 // import Home from "../pages/Home";
 import PrivateRoutes from "./PrivateRoutes";
 import Homee from "../pages/Homee";
-import Dashboard from "../pages/Dashboard";
 
 export const router = createBrowserRouter([
     {
@@ -13,17 +12,13 @@ export const router = createBrowserRouter([
       element: <Main></Main>,
       children: [
         {
-            path: '/',
-            element: <Login></Login>
+          path: '/',
+          element: <Login></Login>
         },
         {
-            path: 'dashboard',
-            element: <PrivateRoutes><Dashboard></Dashboard></PrivateRoutes>
-        },
-        {
-            path: 'home',
-            element: <PrivateRoutes><Homee></Homee></PrivateRoutes>
-            // element: <PrivateRoutes><Home></Home></PrivateRoutes>
+          path: 'home',
+          element: <PrivateRoutes><Homee></Homee></PrivateRoutes>
+            
         }
       ],
       errorElement: <ErrorPage></ErrorPage>

@@ -4,10 +4,11 @@ import Swal from "sweetalert2";
 import useAuth from "../hooks/useAuth";
 import useTodo from "../hooks/useTodo";
 import DragAndDrop from "../components/DragAndDrop";
-import axios from "axios";
+// import axios from "axios";
 import io from "socket.io-client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { GoPlus } from "react-icons/go";
 
 
 const Homee = () => {
@@ -63,7 +64,7 @@ const Homee = () => {
         // refetchInterval: 100,
     });
 
-    console.log(allTasks);
+    // console.log(allTasks);
     // const order = ["To-Do", "In Progress", "Done"];
     // let groupedData = allTasks.reduce((acc, item) => {
     //     if (!acc[item.category]) {
@@ -82,15 +83,15 @@ const Homee = () => {
     
     useEffect(() => {
         // socket.io connection
-        // const socket = io(`https://tms-server-sq5b.onrender.com/socket`);
-        const socket = io(`http://localhost:4564/socket`);
+        const socket = io(`https://tms-server-sq5b.onrender.com/socket`);
+        // const socket = io(`http://localhost:4564/socket`);
     
         const handleNewTask = (task) => {
-            console.log(task);
+            // console.log(task);
             // setuTasks(userTasks);
             // console.log(userTasks);
-            console.log("task")
-            console.log(allTasks)
+            // console.log("task")
+            // console.log(allTasks)
             setAllTasks([...allTasks, task] );
         };
     
@@ -146,7 +147,7 @@ const Homee = () => {
             // await refetch();
             // setTasks(obj);
         }
-        // document.getElementById('task_add_modal').close();
+        document.getElementById('task_add_modal').close();
     }
     // console.log(userTasks);
     useEffect(() => {
@@ -180,9 +181,9 @@ const Homee = () => {
         return <h1>loading....</h1>
     }
     return (
-        <div className="flex gap-10 my-10 p-10">
-            <div className="lg:w-1/3">
-                <form onSubmit={handleSubmit} className="card-body">
+        <div className="lg:max-w-7xl lg:mx-auto mx-4 min-h-screen my-10">
+            <div className="">
+                {/* <form onSubmit={handleSubmit} className="card-body">
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text">Task Title</span>
@@ -197,13 +198,13 @@ const Homee = () => {
                     </div>
                     
                     <button className="btn">Add Task</button>
-                </form>
+                </form> */}
                 {/* Open the modal using document.getElementById('ID').showModal() method */}
-                {/* <button className="btn" onClick={() => document.getElementById('task_add_modal').showModal()}>Add Task</button>
-                <dialog id="task_add_modal" className="modal modal-bottom sm:modal-middle bg-green-300 bg-opacity-30">
+                <button className="btn mb-10" onClick={() => document.getElementById('task_add_modal').showModal()}><GoPlus className="text-xl" /> Add Task</button>
+                <dialog id="task_add_modal" className="modal modal-bottom sm:modal-middle">
                     <div className="modal-box">
                         <div className="modal-action">
-                            <form onSubmit={handleSubmit} className="card-body modal-backdrop" method="dialog">
+                            <form onSubmit={handleSubmit} className="card-body" method="dialog">
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">Task Title</span>
@@ -216,13 +217,13 @@ const Homee = () => {
                                     </label>
                                     <textarea name="description" maxLength="200" className="textarea textarea-bordered" placeholder="Description" required></textarea>
                                 </div>
-                                <button className="btn">Add Task</button>
+                                <button className="btn"> Add Task</button>
                             </form>
                         </div>
                     </div>
-                </dialog> */}
+                </dialog>
             </div>
-            <div className="lg:w-2/3">
+            <div>
                 {/* <div className='board bg-gray-900 flex gap-4 p-4 w-full'>
                     <div className='todo bg-gray-400 space-y-4 p-2 w-1/3'
                         // onDrop={handleOnDrop}

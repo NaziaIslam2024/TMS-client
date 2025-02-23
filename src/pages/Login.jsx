@@ -4,13 +4,11 @@ import { useNavigate } from "react-router-dom";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const Login = () => {
-    const { user, googleSignIn } = useAuth();
+    const { googleSignIn } = useAuth();
     const axiosPublic = useAxiosPublic();
     // console.log(user);
     const navigate = useNavigate();
-    if(user){
-        return;
-    }
+
     const handleGoogleSignIn = () => {
         googleSignIn()
             .then(result => {
@@ -42,21 +40,6 @@ const Login = () => {
                     text: error.message,
                 })
             )
-        // .then(result =>{
-        //     // console.log(result.user);
-        //     const userInfo = {
-        //         email: result.user?.email,
-        //         name: result.user?.displayName,
-        //         url: result.user?.photoURL,
-        //         role: "member"
-        //     }
-        //     axiosPublic.post('/users', userInfo)
-        //     .then(res =>{
-        //         // console.log(res.data);
-        //         // Swal.fire('Login successful')
-        //         navigate(from, { replace: true });
-        //     })
-        // })
     }
     return (
         <div
