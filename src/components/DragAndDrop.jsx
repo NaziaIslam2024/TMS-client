@@ -5,7 +5,7 @@ import useAxiosPublic from "../hooks/useAxiosPublic";
 
 const DragAndDrop = ({ initialState }) => {
     const axiosPublic = useAxiosPublic();
-    console.log(initialState);
+    // console.log(initialState);
     const [data, setData] = useState(initialState);
     useEffect(() => {
         setData(initialState);
@@ -25,13 +25,13 @@ const DragAndDrop = ({ initialState }) => {
     }
     const handleOnDrop = async (e, targetContainer) => {
         const item = dragItem.current;
-        // console.log("item-->");
-        // console.log(item);
+        console.log("item-->");
+        console.log(item);
         const sourceContainer = dragContainer.current;
-        // console.log("target Container-->");
-        // console.log(targetContainer);
+        console.log("target Container-->");
+        console.log(targetContainer);
         const res = await axiosPublic.put(`/taskUpdate/${item.id}`, { "targetContainer": targetContainer });
-        // console.log(res.data);
+        console.log(res.data);
         setData((prev) => {
             const newData = { ...prev };
             newData[sourceContainer] = newData[sourceContainer].filter((i) => i !== item);
@@ -45,12 +45,13 @@ const DragAndDrop = ({ initialState }) => {
         e.preventDefault();
     }
 
-    const updateTask = (item) => {
-        console.log(item)
+    const updateTask = (item, container) => {
+        // console.log("update item--------------->",item, container)
         document.getElementById('task_update_modal').showModal();
         document.getElementById("itemId").value = item.id;
         document.getElementById("title").value = item.title;
         document.getElementById("desc").value = item.desc;  
+        document.getElementById("category").value = container;  
     }
 
     const handleClickCross = () => {
@@ -60,8 +61,8 @@ const DragAndDrop = ({ initialState }) => {
     const handleUpdateSubmit = async(e) => {
         e.preventDefault();
         const itemId = e.target.itemId.value;
-        const UpdatedItem = {updatedTitle: e.target.title.value, updatedDesc: e.target.desc.value}
-        console.log(UpdatedItem);
+        const UpdatedItem = {updatedTitle: e.target.title.value, updatedDesc: e.target.desc.value, category:e.target.category.value}
+        console.log("update item--------------->",UpdatedItem);
         const res = await axiosPublic.put(`/UpdateTaskProperty/${itemId}`, { "UpdatedItem": UpdatedItem });
         console.log(res);
         if(res.data.__v === 0){
@@ -124,7 +125,7 @@ const DragAndDrop = ({ initialState }) => {
                                     <p className="text-gray-700 text-sm my-2">{item.desc}</p>
                                     <div className="flex justify-around mt-2">
                                         <span className='btn'
-                                            onClick={() => updateTask(item)}
+                                            onClick={() => updateTask(item, container)}
                                         >✏️</span>
                                         <dialog id="task_update_modal" className="modal modal-bottom sm:modal-middle">
                                             <div className="modal-box">
@@ -143,6 +144,12 @@ const DragAndDrop = ({ initialState }) => {
                                                                 <span className="label-text">Task Description</span>
                                                             </label>
                                                             <textarea id="desc" name="desc" maxLength="200" className="textarea textarea-bordered" placeholder="Description" required></textarea>
+                                                        </div>
+                                                        <div className="form-control">
+                                                            <label className="label">
+                                                                <span className="label-text">Task Category</span>
+                                                            </label>
+                                                            <textarea readOnly id="category" name="category" maxLength="200" className="textarea textarea-bordered" placeholder="Description" required></textarea>
                                                         </div>
                                                         <button className="btn mt-4">Update Task</button>
                                                     </form>
