@@ -83,16 +83,24 @@ const Homee = () => {
     
     useEffect(() => {
         // socket.io connection
-        const socket = io(`https://tms-server-sq5b.onrender.com/socket`);
-        // const socket = io(`http://localhost:4564/socket`);
+        // const socket = io(`https://tms-server-sq5b.onrender.com/socket`);
+        const socket = io(`http://localhost:4564/socket`);
     
         const handleNewTask = (task) => {
-            // console.log(task);
+            console.log("task");
+            console.log(task);
             // setuTasks(userTasks);
             // console.log(userTasks);
             // console.log("task")
             // console.log(allTasks)
             setAllTasks([...allTasks, task] );
+        };
+
+        const handleUpdateTask = (task) => {
+            const updatedTasks = allTasks.filter((task1) => {
+                return task1._id !== task._id;
+              });
+            setAllTasks([...updatedTasks, task] );
         };
     
         socket.on("newTask", handleNewTask);
@@ -102,7 +110,9 @@ const Homee = () => {
               return task._id !== id;
             });
             setAllTasks(updatedTasks)
-          });
+        });
+
+        socket.on("updateTask", handleUpdateTask);
     
         // Cleanup on component unmount
         // return () => {
@@ -125,7 +135,9 @@ const Homee = () => {
     //     await refetch();
     // };
     
-
+    const handleClickCross = () => {
+        document.getElementById('task_add_modal').close();
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -205,6 +217,7 @@ const Homee = () => {
                     <div className="modal-box">
                         <div className="modal-action">
                             <form onSubmit={handleSubmit} className="card-body" method="dialog">
+                            <span onClick={handleClickCross} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</span>
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">Task Title</span>
