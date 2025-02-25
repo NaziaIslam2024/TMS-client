@@ -15,7 +15,6 @@ TMS is a Task Management System for organizing your task efficiently and gives y
 
 ## npm packages
 
-* 
 * Authentication
     > Firebase.
 
