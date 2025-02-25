@@ -25,13 +25,13 @@ const DragAndDrop = ({ initialState }) => {
     }
     const handleOnDrop = async (e, targetContainer) => {
         const item = dragItem.current;
-        console.log("item-->");
-        console.log(item);
+        // console.log("item-->");
+        // console.log(item);
         const sourceContainer = dragContainer.current;
-        console.log("target Container-->");
-        console.log(targetContainer);
+        // console.log("target Container-->");
+        // console.log(targetContainer);
         const res = await axiosPublic.put(`/taskUpdate/${item.id}`, { "targetContainer": targetContainer });
-        console.log(res.data);
+        // console.log(res.data);
         setData((prev) => {
             const newData = { ...prev };
             newData[sourceContainer] = newData[sourceContainer].filter((i) => i !== item);
@@ -62,9 +62,9 @@ const DragAndDrop = ({ initialState }) => {
         e.preventDefault();
         const itemId = e.target.itemId.value;
         const UpdatedItem = {updatedTitle: e.target.title.value, updatedDesc: e.target.desc.value, category:e.target.category.value}
-        console.log("update item--------------->",UpdatedItem);
+        // console.log("update item--------------->",UpdatedItem);
         const res = await axiosPublic.put(`/UpdateTaskProperty/${itemId}`, { "UpdatedItem": UpdatedItem });
-        console.log(res);
+        // console.log(res);
         if(res.data.__v === 0){
             Swal.fire({
                 position: "top-end",

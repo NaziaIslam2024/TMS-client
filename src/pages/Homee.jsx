@@ -83,16 +83,16 @@ const Homee = () => {
     
     useEffect(() => {
         // socket.io connection
-        // const socket = io(`https://tms-server-sq5b.onrender.com/socket`);
-        const socket = io(`http://localhost:4564/socket`);
+        const socket = io(`https://tms-server-sq5b.onrender.com/socket`);
+        // const socket = io(`http://localhost:4564/socket`);
     
         const handleNewTask = (task) => {
-            console.log("task");
-            console.log(task);
+            // console.log("task");
+            // console.log(task);
             // setuTasks(userTasks);
             // console.log(userTasks);
-            // console.log("task")
-            // console.log(allTasks)
+            console.log("task")
+            console.log(allTasks)
             setAllTasks([...allTasks, task] );
         };
 
